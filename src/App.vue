@@ -1,28 +1,36 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <TableUsers :users="users" v-if="!loading" />
+    <div v-else class="d-flex justify-content-center mb-3">
+      <BSpinner label="Loading..."></BSpinner>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { BSpinner } from 'bootstrap-vue';
+import TableUsers from './components/TableUsers';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    BSpinner,
+    TableUsers
+  },
+  data: () => ({
+    loading: false
+  }),
+  computed: {
+    ...mapGetters('usersTable', ['users'])
+  },
+  created(){
+    this.loading = true;
+    this.$store.dispatch('usersTable/getUsers').then(() => this.loading = false);
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
